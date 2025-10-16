@@ -1,0 +1,49 @@
+name: Rebuild search index
+
+on:
+  push:
+    paths:
+      - "workflows/**"
+      - "tools/build_index.py"
+  workflow_dispatch: {}
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rebuild-index
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Rebuild search/index.json
+        run: |
+          python tools/build_index.py
+          echo "----- git status / diff -----"
+          git status
+          git diff --color=always || true
+
+      - name: Commit & push if changed
+        run: |
+          if ! git diff --quiet; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add search/index.json
+            git commit -m "chore(ci): rebuild search index [skip ci]"
+            git push
+          else
+            echo "No changes detected in search/index.json"
+          fi
