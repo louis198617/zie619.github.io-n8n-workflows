@@ -1,0 +1,13 @@
+{
+  "name": "Google Form → Notion",
+  "nodes": [
+    {
+      "name": "HTTP Trigger",
+      "type": "http"
+    },
+    {
+      "name": "Notion",
+      "type": "notion"
+    }
+  ]
+}

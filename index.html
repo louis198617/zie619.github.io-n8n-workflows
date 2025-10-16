@@ -1,15 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>n8n Workflows</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 100px; }
-    h1 { color: #4CAF50; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>n8n Workflows Library</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <!-- Fuse.js for client-side fuzzy search -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
 </head>
 <body>
-  <h1>🚀 Welcome to n8n Workflows Page</h1>
-  <p>This GitHub Page is successfully deployed.</p>
+  <header>
+    <h1>🚀 n8n Workflows Library</h1>
+    <p class="subtitle">Static, GitHub Pages–friendly viewer • Client-side search • No backend</p>
+  </header>
+
+  <section class="controls">
+    <input id="q" type="search" placeholder="Search workflows (title, tags, summary)…" autofocus />
+    <span id="count">0 results</span>
+  </section>
+
+  <main id="results" class="results"></main>
+
+  <template id="card-tpl">
+    <article class="card">
+      <h3 class="title"></h3>
+      <p class="summary"></p>
+      <div class="meta"></div>
+      <div class="actions">
+        <button class="view-btn">View JSON</button>
+        <a class="raw-link" target="_blank" rel="noopener">Open raw</a>
+      </div>
+      <pre class="json pretty hidden"></pre>
+    </article>
+  </template>
+
+  <footer>
+    <p>Built for <strong>GitHub Pages</strong>. Put workflow JSON files under <code>/workflows</code> and run <code>tools/build_index.py</code> locally to regenerate <code>/search/index.json</code>, then commit.</p>
+  </footer>
+
+  <script src="assets/app.js"></script>
 </body>
 </html>

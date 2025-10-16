@@ -1,0 +1,24 @@
+[
+  {
+    "id": "sample-telegram-autoreply",
+    "title": "Telegram Auto-reply Bot",
+    "tags": [
+      "telegram",
+      "openai",
+      "faq"
+    ],
+    "summary": "Auto replies in Telegram using n8n + OpenAI + Google Sheets lookup.",
+    "path": "workflows/telegram-autoreply.json"
+  },
+  {
+    "id": "sample-googleform-notion",
+    "title": "Google Form → Notion Sync",
+    "tags": [
+      "google",
+      "notion",
+      "integration"
+    ],
+    "summary": "Sync new responses from Google Forms to Notion database with basic validation.",
+    "path": "workflows/googleform-notion.json"
+  }
+]

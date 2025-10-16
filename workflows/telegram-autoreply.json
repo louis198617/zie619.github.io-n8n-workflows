@@ -1,0 +1,13 @@
+{
+  "name": "Telegram Auto-reply Bot",
+  "nodes": [
+    {
+      "name": "Trigger",
+      "type": "telegram-trigger"
+    },
+    {
+      "name": "OpenAI",
+      "type": "openai"
+    }
+  ]
+}
