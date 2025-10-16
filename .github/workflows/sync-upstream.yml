@@ -1,0 +1,64 @@
+name: Sync upstream workflows and rebuild index
+
+on:
+  workflow_dispatch: {}          # 手动触发
+  schedule:
+    - cron: "11 4 * * *"         # 每天 04:11 UTC 自动同步（可改/可删）
+
+permissions:
+  contents: write                # 允许推回当前仓库
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Checkout 你的 Pages 仓库（目标仓库）
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+
+      # 2) Checkout 上游仓库 Zie619/n8n-workflows 到子目录 upstream/
+      - name: Checkout upstream repo
+        uses: actions/checkout@v4
+        with:
+          repository: Zie619/n8n-workflows
+          path: upstream
+          fetch-depth: 1
+
+      # 3) 用上游的 workflows 覆盖你仓库的 /workflows
+      - name: Sync workflows folder
+        run: |
+          mkdir -p workflows
+          rsync -av --delete --exclude ".git/" upstream/workflows/ workflows/
+
+      # 4) （可选）清理示例 JSON，避免混入
+      - name: Remove demo samples if present
+        run: |
+          rm -f workflows/telegram-autoreply.json || true
+          rm -f workflows/googleform-notion.json || true
+
+      # 5) 安装 Python 并重建搜索索引
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Rebuild search index
+        run: |
+          python tools/build_index.py
+          echo "----- diff -----"
+          git status
+          git diff --color=always || true
+
+      # 6) 有变化就提交并推回
+      - name: Commit & push if changed
+        run: |
+          if ! git diff --quiet; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add workflows/ search/index.json
+            git commit -m "chore(ci): sync upstream + rebuild index [skip ci]"
+            git push
+          else
+            echo "No changes to commit"
+          fi
